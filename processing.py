@@ -7,12 +7,7 @@ from PIL import Image
 
 
 camera = PiCamera()
-camera.start_preview()
-sleep(1)
-camera.rotation = 180
 camera.capture('/home/silicon/Desktop/raspcam.jpg')
-camera.stop_preview()
-
 rasp_cam = Image.open('/home/silicon/Desktop/raspcam.jpg')
 
 
@@ -23,6 +18,7 @@ bottom = 700
 
 img_crop = rasp_cam.crop((left,top,right,bottom))
 img_crop.save('/home/silicon/Desktop/raspcam.jpg')
+
 
 img = cv.imread('/home/silicon/Desktop/raspcam.jpg')
 
