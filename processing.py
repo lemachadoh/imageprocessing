@@ -3,17 +3,28 @@ import numpy as np
 from matplotlib import pyplot as plt
 from picamera import PiCamera
 from time import sleep
+from PIL import Image
 
-#img = cv.imread('picture-raspcam.jpg')
 
 camera = PiCamera()
 camera.start_preview()
 sleep(1)
 camera.rotation = 180
 camera.capture('/home/silicon/Desktop/raspcam.jpg')
-img = cv.imread('/home/silicon/Desktop/raspcam.jpg')
 camera.stop_preview()
 
+rasp_cam = Image.open('/home/silicon/Desktop/raspcam.jpg')
+
+
+left = 230
+top = 170
+right = 705
+bottom = 700
+
+img_crop = rasp_cam.crop((left,top,right,bottom))
+img_crop.save('/home/silicon/Desktop/raspcam.jpg')
+
+img = cv.imread('/home/silicon/Desktop/raspcam.jpg')
 
 def color(image):
     image =  cv.cvtColor(image,cv.COLOR_BGR2GRAY)
@@ -21,8 +32,8 @@ def color(image):
 
 def gamma_and_threshold(image):
     blur = cv.medianBlur(color(image),7)
-    gamma = np.array(255* (blur/255)**0.4,dtype='uint8')
-    threshold = cv.adaptiveThreshold(gamma,255,cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY,1501,13)
+    gamma = np.array(255* (blur/255)**0.15,dtype='uint8')
+    threshold = cv.adaptiveThreshold(gamma,255,cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY,601,10)
     threshold = cv.bitwise_not(threshold)
     return threshold
 
@@ -50,4 +61,5 @@ labeled_img[label_hue == 0] = 0
 plt.imshow(labeled_img)
 plt.show()
 print('objects number is:', ret-1)
+
 
