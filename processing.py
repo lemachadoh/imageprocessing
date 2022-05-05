@@ -15,29 +15,12 @@ camera.stop_preview()
 
 rasp_cam = Image.open('/home/silicon/Desktop/raspcam.jpg')
 
-
-left = 230
-top = 170
-right = 705
-bottom = 700
+left = 230  ; top = 170 ; right = 705 ; bottom = 700
 
 img_crop = rasp_cam.crop((left,top,right,bottom))
 img_crop.save('/home/silicon/Desktop/raspcam.jpg')
 '''''
 img = cv.imread(r'C:\Users\lwmachado\Desktop\fotos\moedas.jpg')
-
-output = img.copy()
-height, width = img.shape[:2]
-maxWidth = int(width/10)
-minWidth = int(width/20)
-
-
-minDist = 35
-param1 = 600
-param2 = 100
-minRadius = 0
-maxRadius = 0
-
 
 def color(image):
     image =  cv.cvtColor(image,cv.COLOR_BGR2GRAY)
@@ -57,17 +40,33 @@ def dilatation_and_erosion(threshold):
     img_erode = cv.erode(img_dilation,kernel, iterations=1)
     return img_erode
 
+minDist = 60 ; param1 = 600 ; param2 = 100 ; minRadius = 0 ; maxRadius = 0
 
-circles = cv.HoughCircles(color(img), cv.HOUGH_GRADIENT, 1, minDist, param1=param1, param2=param2, minRadius=minRadius, maxRadius=maxRadius)
-imagem = dilatation_and_erosion(img)
+circles = cv.HoughCircles(
+    img,                    #8-bit, single-channel, grayscale input image.
+    cv.HOUGH_GRADIENT,      #Detection method
+    2,                      #Inverse ratio of the accumulator resolution to the image resolution
+    minDist,                #Minimum distance between the centers of the detected circles
+    param1=param1,          #First method-specific parameter
+    param2=param2,          #Second method-specific parameter.
+    minRadius=minRadius, 
+    maxRadius=maxRadius)
+
+circles = np.uint16(np.around(circles))
 
 if circles is not None:
-
     circles = np.uint16(np.around(circles))
-    for i in circles[0,:]:
-        cv.circle(img, (i[0], i[1]), i[2], (0, 255, 0), 2)
-    else: 
-        print("No circles found")
+    for i in circles[0, :]:
+        cv.circle(
+            img,             #image
+            (i[0], i[1]),    #center 
+            i[2],            #radius
+            (0,255, 255),    #color
+            2)               #shift
+else: 
+    print("No circles found")
+    
+imagem = dilatation_and_erosion(img)
 
 ret, labels = cv.connectedComponents(imagem)
 
@@ -78,8 +77,6 @@ labeled_img = cv.merge([label_hue, blank_ch, blank_ch])
 labeled_img = cv.cvtColor(labeled_img,cv.COLOR_BGR2GRAY)
 labeled_img[label_hue == 0] = 0
 
-shape_circle = circles.shape[1:2:]
-
 
 #plt.imshow(labeled_img)
 plt.imshow(img)
@@ -87,6 +84,5 @@ plt.legend()
 plt.title("Circles counted: ".format(shape_circle))
 plt.show()
 print('objects number is:', ret-1)
-print(circles.shape[1:2])
 
 
