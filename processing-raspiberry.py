@@ -51,6 +51,8 @@ circles = cv.HoughCircles(
 
 imagem = dilatation_and_erosion(img)
 
+n_circulos = 0
+
 if circles is not None:
     circles = np.uint16(np.around(circles))
     for i in circles[0, :]:
@@ -60,6 +62,7 @@ if circles is not None:
             i[2],            #radius
             (0,255, 255),    #color
             2)               #shift
+     n_circulos = n_circulos + 1
 else: 
     print("No circles found")
 
@@ -72,14 +75,12 @@ labeled_img = cv.merge([label_hue, blank_ch, blank_ch])
 labeled_img = cv.cvtColor(labeled_img,cv.COLOR_BGR2GRAY)
 labeled_img[label_hue == 0] = 0
 
-shape_circle = circles.shape[1:2:]
 
 
 plt.imshow(labeled_img)
 plt.imshow(img)
 plt.legend()
-plt.title("Circles counted: ".format(shape_circle))
+plt.title("Circles counted: {0}".format(n_circulos))
 plt.show()
 print('objects number is:', ret-1)
 print((circles))
-#print(circles.shape[1:2])
