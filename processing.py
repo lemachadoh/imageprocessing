@@ -54,6 +54,8 @@ circles = cv.HoughCircles(
 
 circles = np.uint16(np.around(circles))
 
+n_circulos = 0
+
 if circles is not None:
     circles = np.uint16(np.around(circles))
     for i in circles[0, :]:
@@ -63,6 +65,7 @@ if circles is not None:
             i[2],            #radius
             (0,255, 255),    #color
             2)               #shift
+    n_circulos = n_circulos + 1
 else: 
     print("No circles found")
     
@@ -81,7 +84,7 @@ labeled_img[label_hue == 0] = 0
 #plt.imshow(labeled_img)
 plt.imshow(img)
 plt.legend()
-plt.title("Circles counted: ".format(shape_circle))
+plt.title("Circles counted: {0} ".format(n_circulos))
 plt.show()
 print('objects number is:', ret-1)
 
