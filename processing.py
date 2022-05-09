@@ -20,7 +20,7 @@ left = 230  ; top = 170 ; right = 705 ; bottom = 700
 img_crop = rasp_cam.crop((left,top,right,bottom))
 img_crop.save('/home/silicon/Desktop/raspcam.jpg')
 '''''
-img = cv.imread(r'C:\Users\lwmachado\Desktop\fotos\moedas.jpg')
+img = cv.imread(r'C:\Users\lwmachado\Desktop\fotos\formas.png')
 
 def color(image):
     image =  cv.cvtColor(image,cv.COLOR_BGR2GRAY)
