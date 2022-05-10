@@ -1,4 +1,4 @@
-#codigo usado com controle de luz no fundo preto, as definições de gamma e threshold estão configuradas para espefícamente essas condições
+#codigo usado com controle de luz no fundo branco, as definições de gamma e threshold estão configuradas para espefícamente essas condições
 import cv2 as cv
 import numpy as np
 from matplotlib import pyplot as plt
