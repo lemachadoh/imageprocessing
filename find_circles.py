@@ -1,26 +1,36 @@
-import cv2
+import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
-image = cv2.imread(r"C:\Users\lwmachado\Desktop\fotos\moedas.jpg")
+image = cv.imread(r"C:\Users\lwmachado\Desktop\fotos\moedas.jpg")
 
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+gray = cv.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-minDist = 35 ; param1 = 600 ; param2 = 100 ; minRadius = 0 ; maxRadius = 0
+minDist = 50 ; param1 = 600 ; param2 = 100 ; minRadius = 0 ; maxRadius = 0
 
-circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, minDist, param1=param1, param2=param2, minRadius=minRadius, maxRadius=maxRadius)
+circles = cv.HoughCircles(
+    color(img),        #8-bit, single-channel, grayscale input image.
+    cv.HOUGH_GRADIENT, #Detection method
+    2,                 #Inverse ratio of the accumulator resolution to the image resolution
+    minDist,           #Minimum distance between the centers of the detected circles
+    param1=param1,     #First method-specific parameter
+    param2=param2,     #Second method-specific parameter.
+    minRadius=minRadius,
+    maxRadius=maxRadius)
+
+n_circulos = 0
 
 if circles is not None:
-
     circles = np.uint16(np.around(circles))
-    for i in circles[0,:]:
-        cv2.circle(image, (i[0], i[1]), i[2], (0, 255, 0), 2)
-else:
+    for i in circles[0, :]:
+        cv.circle(
+            image,           #image
+            (i[0], i[1]),    #center 
+            i[2],            #radius
+            (0,255, 255),    #color
+            2)               #shift
+        n_circulos = n_circulos + 1
+else: 
     print("No circles found")
-
-
-cv2.imshow('image',image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
 
 
