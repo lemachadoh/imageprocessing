@@ -1,0 +1,10 @@
+WORK FLOW - color detection
+
+
+Transform color to HSV color space
+Define the detection range for each color
+Create a mask for each color
+Dilatation - Morphological transform
+Bitwise and operator between imageand mask
+Create countor to track each color
+and finally: Color detection as our output 
