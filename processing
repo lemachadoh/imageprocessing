@@ -12,7 +12,7 @@ camera.capture('/home/silicon-leandra/Desktop/raspcam.jpg')
 camera.stop_preview()
 rasp_cam = Image.open('/home/silicon-leandra/Desktop/raspcam.jpg')
 
-left = 145 ; top = 0 ; right = 1200 ; bottom = 850
+left = 180 ; top = 70 ; right = 1200 ; bottom = 900
 
 img = rasp_cam.crop((left,top,right,bottom))
 img.save('/home/silicon-leandra/Desktop/raspcam.jpg')
@@ -26,8 +26,8 @@ def color(image):
 
 def gamma_and_threshold(image):
     blur = cv.medianBlur(color(image),7)
-    gamma = np.array(255* (blur/255)**2,dtype='uint8')
-    threshold = cv.adaptiveThreshold(gamma,177,cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV,761,0.5)
+    gamma = np.array(255* (blur/255)**5.5,dtype='uint8')
+    threshold = cv.adaptiveThreshold(gamma,255,cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV,871,0.1)
     threshold = cv.bitwise_not(threshold)
     return threshold
 
@@ -69,7 +69,7 @@ if circles is not None:
         
         n_circulos = n_circulos + 1
 
-    cv.putText(planets, f"circles found: {n_circulos:.0f}", (800,100),
+    cv.putText(planets, f"circles found: {n_circulos:.0f}", (600,100),
                        cv.FONT_HERSHEY_SIMPLEX,
                        1.0, (255,255,255))
 
@@ -80,22 +80,32 @@ else:
 imagem = dilatation_and_erosion(planets)
 
 ret, labels = cv.connectedComponents(imagem)
+label_hue = np.uint8(179 * labels / np.max(labels))
+blank_ch = 255 * np.ones_like(label_hue)
+
+labeled_img = cv.merge([label_hue, blank_ch, blank_ch])
+labeled_img = cv.cvtColor(labeled_img,cv.COLOR_BGR2GRAY)
+labeled_img[label_hue == 0] = 0
+
+cv.putText(planets, f"Objects: {ret-1:.0f}", (600,150),
+                       cv.FONT_HERSHEY_SIMPLEX,
+                       1.0, (255,255,255))
 
 hsv = cv.cvtColor(planets, cv.COLOR_BGR2HSV)
 
 #green mask
-green_low = np.array([35,96,20], np.uint8)
+green_low = np.array([40,50,50], np.uint8)
 green_up = np.array([80,255,255], np.uint8)
 green_mask = cv.inRange(hsv, green_low, green_up)
 
 #blue mask
-blue_low = np.array([100,100,20], np.uint8)
+blue_low = np.array([100,50,20], np.uint8)
 blue_up = np.array([140,255,255], np.uint8)
 blue_mask = cv.inRange(hsv, blue_low, blue_up)
 
 #red mask
-red_low = np.array([0,80,20], np.uint8)
-red_up = np.array([20,255,255], np.uint8)
+red_low = np.array([170,50,50], np.uint8)
+red_up = np.array([180,255,255], np.uint8)
 red_mask = cv.inRange(hsv, red_low, red_up)
     
 kernal = np.ones((5,5), 'uint8')
@@ -159,13 +169,11 @@ for pic, contour in enumerate(contours):
         cv.putText(planets, "red", (x,y),
                        cv.FONT_HERSHEY_SIMPLEX,
                        1.0, (0,0,255))
-        
+    
 cv.imshow("colors", planets)
-#plt.imshow(planets)
 cv.waitKey(0) 
 #cv.destroyAllWindows()
+#create a track bar -> thresold values, gamma corection value, hsv values
 
-#plt.title("Circles counted: {0}, objects counted: {1}".format(n_circulos,ret-1))
-#plt.show()
 
 
