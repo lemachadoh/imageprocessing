@@ -31,7 +31,6 @@ def gamma_and_threshold(image):
     threshold = cv.bitwise_not(threshold)
     return threshold
 
-
 def dilatation_and_erosion(threshold):
     kernel = np.ones((15,15), np.uint8)
     img_dilation = cv.dilate(gamma_and_threshold(threshold), kernel, iterations=1)
@@ -58,19 +57,23 @@ if circles is not None:
             planets,         #image
             (i[0], i[1]),    #center 
             i[2],            #radius
-            (0,255, 0),      #color
+            (255,255, 255),  #color
             1)               #shift
         
         cv.circle(
             planets,
             (i[0],i[1]),
             3,
-            (0,0,255),
+            (255,255, 255),
             1)
         
         n_circulos = n_circulos + 1
-    print('circles found:', n_circulos)
 
+    cv.putText(planets, f"circles found: {n_circulos:.0f}", (800,100),
+                       cv.FONT_HERSHEY_SIMPLEX,
+                       1.0, (255,255,255))
+
+    print('circles found:', n_circulos)
 else: 
     print("No circles found")
 
@@ -164,4 +167,5 @@ cv.waitKey(0)
 
 #plt.title("Circles counted: {0}, objects counted: {1}".format(n_circulos,ret-1))
 #plt.show()
+
 
